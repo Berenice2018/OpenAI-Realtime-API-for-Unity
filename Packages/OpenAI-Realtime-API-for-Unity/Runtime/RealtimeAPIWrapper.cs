@@ -57,7 +57,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
     {
         try
         {
-            var uri = new Uri("wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01");
+            var uri = new Uri("wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview-2024-12-17"); // lower cost variant
             ws.Options.SetRequestHeader("Authorization", "Bearer " + apiKey);
             ws.Options.SetRequestHeader("OpenAI-Beta", "realtime=v1");
             await ws.ConnectAsync(uri, CancellationToken.None);
@@ -112,6 +112,20 @@ public class RealtimeAPIWrapper : MonoBehaviour
                     }
                 }
             };
+            /*var eventMessage = new
+            {
+                type = "conversation.item.create",
+                item = new
+                {
+                    type = "message",
+                    role = "user",
+                    content = new[]
+                    {
+                        new { type = "input_text", text = "Say hello, please speak aloud!" }
+                    }
+                }
+            };*/
+
 
             string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(eventMessage);
             byte[] messageBytes = Encoding.UTF8.GetBytes(jsonString);
@@ -123,9 +137,10 @@ public class RealtimeAPIWrapper : MonoBehaviour
                 response = new
                 {
                     modalities = new[] { "audio", "text" },
-                    instructions = "Please provide a transcript."
+                    instructions = "Speak your reply aloud and include a transcript.",
                 }
             };
+
             string responseJson = Newtonsoft.Json.JsonConvert.SerializeObject(responseMessage);
             byte[] responseBytes = Encoding.UTF8.GetBytes(responseJson);
             await ws.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
@@ -137,6 +152,8 @@ public class RealtimeAPIWrapper : MonoBehaviour
     /// </summary>
     private async Task ReceiveMessages()
     {
+        Debug.Log("### ReceiveMessages()");
+
         var buffer = new byte[1024 * 128];
         var messageHandlers = GetMessageHandlers();
 
@@ -156,6 +173,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
             {
                 string fullMessage = messageBuffer.ToString();
                 messageBuffer.Clear();
+                Debug.Log("Raw message: " + fullMessage);
 
                 if (!string.IsNullOrEmpty(fullMessage.Trim()))
                 {
@@ -211,8 +229,11 @@ public class RealtimeAPIWrapper : MonoBehaviour
         if (!string.IsNullOrEmpty(base64AudioData))
         {
             byte[] pcmAudioData = Convert.FromBase64String(base64AudioData);
+            Debug.Log($"### Audio delta received: {pcmAudioData.Length} bytes");
             audioPlayer.EnqueueAudioData(pcmAudioData);
         }
+        else 
+            Debug.Log($"### Audio delta received: string is NULL or empty");
     }
 
     /// <summary>
@@ -223,6 +244,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
         string transcriptPart = eventMessage["delta"]?.ToString();
         if (!string.IsNullOrEmpty(transcriptPart))
         {
+            Debug.Log("### Transcript delta: " + transcriptPart);
             transcriptBuffer.Append(transcriptPart);
             OnTranscriptReceived?.Invoke(transcriptPart);
         }
