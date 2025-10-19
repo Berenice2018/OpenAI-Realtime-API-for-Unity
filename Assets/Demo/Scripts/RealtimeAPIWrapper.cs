@@ -6,13 +6,14 @@ using System.Net.WebSockets;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using BC.Scripts.Utils;
 using BC.Scripts.Postilion;
 using Newtonsoft.Json;
 
 public class RealtimeAPIWrapper : MonoBehaviour
 {
     private ClientWebSocket ws;
-    [SerializeField] string apiKey = "YOUR_API_KEY";
+    private string apiKey = "YOUR_API_KEY"; // loaded via ApiKeyLoader from streamingAssets
     public AudioPlayer audioPlayer;
     public PostilionCtrl postilionCtrl;
     public AudioRecorder audioRecorder;
@@ -36,7 +37,13 @@ public class RealtimeAPIWrapper : MonoBehaviour
     public static event Action OnResponseContentPartAdded;
     public static event Action OnResponseCancelled;
 
-    private void Start() => AudioRecorder.OnAudioRecorded += SendAudioToAPI;
+    private void Start()
+    {
+        apiKey = BcUtils.LoadApiKey();
+
+        AudioRecorder.OnAudioRecorded += SendAudioToAPI;
+    } 
+        
     private void OnApplicationQuit() => DisposeWebSocket();
 
 

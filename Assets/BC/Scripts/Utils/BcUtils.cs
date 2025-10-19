@@ -8,6 +8,41 @@ namespace BC.Scripts.Utils
 {
     public class BcUtils : MonoBehaviour
     {
+        /// <summary>
+        /// Load API key from Streaming Assets
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static string LoadApiKey(string fileName = "openai_key.txt")
+        {
+            string path;
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        path = Path.Combine(Application.streamingAssetsPath, fileName);
+        using (var www = UnityWebRequest.Get(path))
+        {
+            www.SendWebRequest();
+            while (!www.isDone) { }
+            if (www.result == UnityWebRequest.Result.Success)
+                return www.downloadHandler.text.Trim();
+            else
+                Debug.LogError($"Failed to load API key: {www.error}");
+            return null;
+        }
+#else
+            path = Path.Combine(Application.streamingAssetsPath, fileName);
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path).Trim();
+            }
+            else
+            {
+                Debug.LogError($"API key file not found at: {path}");
+                return null;
+            }
+#endif
+        }
+        
         
         public static async Task<string> EncodeImageToBase64Async(string fileName)
         {

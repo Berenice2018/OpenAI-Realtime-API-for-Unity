@@ -9,9 +9,14 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Ss]treamingAssets/
 
 **.vscode
 **.DS_Store
+
+# API keys in Streaming Assets
+**.txt 
+*.txt.meta
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
