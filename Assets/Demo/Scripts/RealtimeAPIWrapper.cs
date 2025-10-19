@@ -7,16 +7,13 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using BC.Scripts.Utils;
-using BC.Scripts.Postilion;
 using Newtonsoft.Json;
 
 public class RealtimeAPIWrapper : MonoBehaviour
 {
     private ClientWebSocket ws;
-    private string apiKey = "YOUR_API_KEY"; // loaded via ApiKeyLoader from streamingAssets
+    private string apiKey = "YOUR_API_KEY"; // loaded from streamingAssets
     public AudioPlayer audioPlayer;
-    public PostilionCtrl postilionCtrl;
-    public AudioRecorder audioRecorder;
     private StringBuilder messageBuffer = new StringBuilder();
     private StringBuilder transcriptBuffer = new StringBuilder();
     private bool isResponseInProgress = false;

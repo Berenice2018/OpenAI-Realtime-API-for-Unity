@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6875561144310920953}
   - component: {fileID: 7521549165741144525}
-  - component: {fileID: 5321156633613647331}
-  - component: {fileID: 6770522393027363295}
   - component: {fileID: 7963961176496044755}
   - component: {fileID: 3935172656535943861}
   m_Layer: 0
@@ -133,40 +131,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5321156633613647331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5144007666192891506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de27cf55bc5f0491faf669f65599ab8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
-  audioSource: {fileID: 7521549165741144525}
-  sampleRate: 24000
-  fftSampleSize: 1024
---- !u!114 &6770522393027363295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5144007666192891506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe671b3e2516d497d9eb68bdefe7f075, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioRecorder
-  listeningMode: 0
-  sampleRate: 24000
-  interruptResponseOnNewRecording: 0
-  vadEnergyThreshold: 0.5
-  vadSilenceDuration: 2
-  vadFreqThreshold: 0
-  fftSampleSize: 1024
 --- !u!114 &7963961176496044755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,7 +210,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a6d0b3bf15644dd993799ce3632afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RealtimeAPIWrapper
-  apiKey: YOUR_API_KEY
-  audioPlayer: {fileID: 5321156633613647331}
-  postilionCtrl: {fileID: 0}
-  audioRecorder: {fileID: 6770522393027363295}
+  audioPlayer: {fileID: 0}

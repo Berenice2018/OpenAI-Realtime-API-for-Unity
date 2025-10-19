@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Demo/Scenes/DemoScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/BC/Scenes/ARPostilion.unity
+    guid: 035271a52d13e40afab8211afe2b8329
   m_configObjects:
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 1deae655c6fba4558ac97bc9aeb2b6fc, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: f5796d84237a94448aede6d5e19fc5df, type: 2}
