@@ -6,8 +6,8 @@ using System.Net.WebSockets;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using BC.Scripts.Postilion;
 using Newtonsoft.Json;
-using  BC.Scripts.Postilion;
 
 public class RealtimeAPIWrapper : MonoBehaviour
 {

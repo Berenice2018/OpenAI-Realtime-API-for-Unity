@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6875561144310920953}
   - component: {fileID: 7521549165741144525}
-  - component: {fileID: 5778159951835551788}
-  - component: {fileID: 4277790966370773839}
+  - component: {fileID: 5321156633613647331}
+  - component: {fileID: 6770522393027363295}
+  - component: {fileID: 7963961176496044755}
+  - component: {fileID: 3935172656535943861}
   m_Layer: 0
   m_Name: Audio
   m_TagString: Untagged
@@ -45,6 +47,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -130,7 +133,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5778159951835551788
+--- !u!114 &5321156633613647331
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,17 +142,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 5144007666192891506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 158779b4cfa684eadbc49287121f2c45, type: 3}
+  m_Script: {fileID: 11500000, guid: de27cf55bc5f0491faf669f65599ab8f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
+  audioSource: {fileID: 7521549165741144525}
+  sampleRate: 24000
+  fftSampleSize: 1024
+--- !u!114 &6770522393027363295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5144007666192891506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe671b3e2516d497d9eb68bdefe7f075, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioRecorder
   listeningMode: 0
   sampleRate: 24000
   interruptResponseOnNewRecording: 0
-  vadEnergyThreshold: 2
-  vadSilenceDuration: 1.5
-  vadFreqThreshold: 1
+  vadEnergyThreshold: 0.5
+  vadSilenceDuration: 2
+  vadFreqThreshold: 0
   fftSampleSize: 1024
---- !u!114 &4277790966370773839
+--- !u!114 &7963961176496044755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,10 +176,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 5144007666192891506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10dcd261ab0cf4839a08d9c49ec28b50, type: 3}
+  m_Script: {fileID: 11500000, guid: de27cf55bc5f0491faf669f65599ab8f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
+  audioSource: {fileID: 7521549165741144525}
   sampleRate: 24000
+  fftSampleSize: 1024
+--- !u!114 &3935172656535943861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5144007666192891506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe671b3e2516d497d9eb68bdefe7f075, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioRecorder
+  listeningMode: 0
+  sampleRate: 24000
+  interruptResponseOnNewRecording: 0
+  vadEnergyThreshold: 0.5
+  vadSilenceDuration: 2
+  vadFreqThreshold: 0
   fftSampleSize: 1024
 --- !u!1 &8086852912749008722
 GameObject:
@@ -172,7 +210,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4132844161054319781}
-  - component: {fileID: 74292311301300547}
+  - component: {fileID: 9186162126272398602}
   m_Layer: 0
   m_Name: RealtimeAPI
   m_TagString: Untagged
@@ -196,7 +234,7 @@ Transform:
   - {fileID: 6875561144310920953}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &74292311301300547
+--- !u!114 &9186162126272398602
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,9 +243,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8086852912749008722}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aed885e263f142908f0ff231fb9aa9e, type: 3}
+  m_Script: {fileID: 11500000, guid: 23a6d0b3bf15644dd993799ce3632afe, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  apiKey: 
-  audioPlayer: {fileID: 4277790966370773839}
-  audioRecorder: {fileID: 5778159951835551788}
+  m_EditorClassIdentifier: Assembly-CSharp::RealtimeAPIWrapper
+  apiKey: YOUR_API_KEY
+  audioPlayer: {fileID: 5321156633613647331}
+  postilionCtrl: {fileID: 0}
+  audioRecorder: {fileID: 6770522393027363295}

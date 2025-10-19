@@ -2,10 +2,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class DemoIntegration : MonoBehaviour
 {
-    [SerializeField] private KeyCode pushToTalkKey = KeyCode.Space;
+    [SerializeField] private Key pushToTalkKey = Key.Space;
     [SerializeField] private AudioRecorder audioRecorder;
     [SerializeField] private AudioPlayer audioPlayer;
     [SerializeField] private TextMeshProUGUI eventsText;
@@ -65,8 +66,11 @@ public class DemoIntegration : MonoBehaviour
     {
         if (audioRecorder.listeningMode == ListeningMode.PushToTalk)
         {
-            if (Input.GetKeyDown(pushToTalkKey) && !isRecording) StartRecording();
-            if (Input.GetKeyUp(pushToTalkKey) && isRecording) StopRecording();
+            if (Keyboard.current[pushToTalkKey].wasPressedThisFrame && !isRecording)
+                StartRecording();
+
+            if (Keyboard.current[pushToTalkKey].wasReleasedThisFrame && isRecording)
+                StopRecording();
         }
         UpdateFrequencyBars();
         UpdateAIFrequencyBars();
