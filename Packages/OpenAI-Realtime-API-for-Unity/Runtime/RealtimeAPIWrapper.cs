@@ -6,12 +6,15 @@ using System.Net.WebSockets;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using  BC.Scripts.Postilion;
 
 public class RealtimeAPIWrapper : MonoBehaviour
 {
     private ClientWebSocket ws;
     [SerializeField] string apiKey = "YOUR_API_KEY";
     public AudioPlayer audioPlayer;
+    public PostilionCtrl postilionCtrl;
     public AudioRecorder audioRecorder;
     private StringBuilder messageBuffer = new StringBuilder();
     private StringBuilder transcriptBuffer = new StringBuilder();
@@ -127,7 +130,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
             };*/
 
 
-            string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(eventMessage);
+            string jsonString = JsonConvert.SerializeObject(eventMessage);
             byte[] messageBytes = Encoding.UTF8.GetBytes(jsonString);
             await ws.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
 
@@ -138,10 +141,11 @@ public class RealtimeAPIWrapper : MonoBehaviour
                 {
                     modalities = new[] { "audio", "text" },
                     instructions = "Speak your reply aloud and include a transcript.",
+                    voice = "verse",          // male, or alloy
                 }
             };
 
-            string responseJson = Newtonsoft.Json.JsonConvert.SerializeObject(responseMessage);
+            string responseJson = JsonConvert.SerializeObject(responseMessage);
             byte[] responseBytes = Encoding.UTF8.GetBytes(responseJson);
             await ws.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
         }

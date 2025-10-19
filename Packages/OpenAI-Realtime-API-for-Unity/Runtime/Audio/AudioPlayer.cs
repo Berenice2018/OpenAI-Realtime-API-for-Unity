@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AudioPlayer : MonoBehaviour
 {
-    private AudioSource audioSource;
+    [SerializeField] private AudioSource audioSource;
     private bool isPlayingAudio = false;
     private bool cancelPending = false;
     public float[] aiFrequencyData { get; private set; }
@@ -17,7 +17,7 @@ public class AudioPlayer : MonoBehaviour
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
         audioSource.loop = false;
     }
 

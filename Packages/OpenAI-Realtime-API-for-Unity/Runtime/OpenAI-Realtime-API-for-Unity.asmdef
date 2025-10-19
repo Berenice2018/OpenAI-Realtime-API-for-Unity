@@ -1,6 +1,9 @@
 {
     "name": "OpenAI-Realtime-API-for-Unity",
     "rootNamespace": "",
+    "references": [
+        "Unity.Newtonsoft.Json"
+    ],
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

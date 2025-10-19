@@ -8,4 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Demo/Scenes/DemoScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 1deae655c6fba4558ac97bc9aeb2b6fc, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: f5796d84237a94448aede6d5e19fc5df, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: cefa59ca4d16749cb94d3468396f96bf, type: 2}
+  m_UseUCBPForAssetBundles: 0
