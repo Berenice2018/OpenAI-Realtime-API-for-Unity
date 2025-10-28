@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +14,16 @@ public class RealtimeAPIWrapper : MonoBehaviour
 {
     private ClientWebSocket ws;
     private string apiKey = "YOUR_API_KEY"; // loaded from streamingAssets
+    [TextArea (3,10)] public string promptInstruction;
     public AudioPlayer audioPlayer;
-    private StringBuilder messageBuffer = new StringBuilder();
-    private StringBuilder transcriptBuffer = new StringBuilder();
-    private bool isResponseInProgress = false;
+    private StringBuilder _messageBuffer = new StringBuilder();
+    private StringBuilder _transcriptBuffer = new StringBuilder();
+    private bool _isResponseInProgress;
+
+    private string _currentConversationId;
+    private string _currentVoice = "verse"; // default voice
+    private int _conversationTurnCount = 0;
+    public int maxTurnsBeforeReset = 1; // change as you like
 
     public static event Action OnWebSocketConnected;
     public static event Action OnWebSocketClosed;
@@ -82,24 +89,30 @@ public class RealtimeAPIWrapper : MonoBehaviour
     /// </summary>
     private async void SendCancelEvent()
     {
-        if (ws.State == WebSocketState.Open && isResponseInProgress)
+        if (ws == null || ws.State != WebSocketState.Open)
+            return;
+
+        if (!_isResponseInProgress)
         {
-            var cancelMessage = new
-            {
-                type = "response.cancel"
-            };
-            string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(cancelMessage);
-            byte[] messageBytes = Encoding.UTF8.GetBytes(jsonString);
-            await ws.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
-            OnResponseCancelled?.Invoke();
-            isResponseInProgress = false;
+            Debug.LogWarning("No active response to cancel.");
+            return;
         }
+
+        var cancelMessage = new { type = "response.cancel" };
+        string jsonString = JsonConvert.SerializeObject(cancelMessage);
+        byte[] messageBytes = Encoding.UTF8.GetBytes(jsonString);
+        await ws.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+
+        Debug.Log("### Sent response.cancel event");
+        OnResponseCancelled?.Invoke();
+        _isResponseInProgress = false;
     }
+
 
     /// <summary>
     /// sends recorded audio to the api
     /// </summary>
-    private async void SendAudioToAPI(string base64AudioData)
+    /*private async void SendAudioToAPI(string base64AudioData)
     {
         if (isResponseInProgress)
             SendCancelEvent();
@@ -131,7 +144,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
                         new { type = "input_text", text = "Say hello, please speak aloud!" }
                     }
                 }
-            };*/
+            };
 
 
             string jsonString = JsonConvert.SerializeObject(eventMessage);
@@ -154,7 +167,51 @@ public class RealtimeAPIWrapper : MonoBehaviour
             await ws.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
+*/
+    private async void SendAudioToAPI(string base64AudioData)
+    {
+        if (_isResponseInProgress)
+            SendCancelEvent();
 
+        if (ws == null || ws.State != WebSocketState.Open)
+            return;
+
+        // 1️⃣ Create user message
+        var eventMessage = new
+        {
+            type = "conversation.item.create",
+            item = new
+            {
+                type = "message",
+                role = "user",
+                content = new[]
+                {
+                    new { type = "input_audio", audio = base64AudioData }
+                }
+            }
+        };
+        await SendJson(eventMessage);
+
+        // 2️⃣ Create response message
+        var responseDict = new Dictionary<string, object>
+        {
+            { "modalities", new[] { "audio", "text" } },
+            { "instructions", promptInstruction }
+        };
+
+        // ✅ Only include voice the very first time (new conversation)
+        if (string.IsNullOrEmpty(_currentConversationId))
+            responseDict["voice"] = _currentVoice;
+
+        var responseMessage = new
+        {
+            type = "response.create",
+            response = responseDict
+        };
+        await SendJson(responseMessage);
+    }
+
+    
     /// <summary>
     /// receives messages from websocket and handles them
     /// </summary>
@@ -168,7 +225,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
         while (ws.State == WebSocketState.Open || ws.State == WebSocketState.CloseReceived)
         {
             var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            messageBuffer.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
+            _messageBuffer.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
 
             if (ws.State == WebSocketState.CloseReceived)
             {
@@ -179,8 +236,8 @@ public class RealtimeAPIWrapper : MonoBehaviour
 
             if (result.EndOfMessage)
             {
-                string fullMessage = messageBuffer.ToString();
-                messageBuffer.Clear();
+                string fullMessage = _messageBuffer.ToString();
+                _messageBuffer.Clear();
                 Debug.Log("Raw message: " + fullMessage);
 
                 if (!string.IsNullOrEmpty(fullMessage.Trim()))
@@ -192,8 +249,15 @@ public class RealtimeAPIWrapper : MonoBehaviour
 
                         if (messageHandlers.TryGetValue(messageType, out var handler)) handler(eventMessage);
 
+                        // Track conversation_id if present
+                        var convoId = eventMessage["response"]?["conversation_id"]?.ToString();
+                        if (!string.IsNullOrEmpty(convoId))
+                        {
+                            _currentConversationId = convoId;
+                            Debug.Log("### Updated currentConversationId: " + _currentConversationId);
+                        }
+                        
                         else Debug.Log("unhandled message type: " + messageType);
-
                     }
                     catch (Exception ex)
                     {
@@ -253,7 +317,7 @@ public class RealtimeAPIWrapper : MonoBehaviour
         if (!string.IsNullOrEmpty(transcriptPart))
         {
             Debug.Log("### Transcript delta: " + transcriptPart);
-            transcriptBuffer.Append(transcriptPart);
+            _transcriptBuffer.Append(transcriptPart);
             OnTranscriptReceived?.Invoke(transcriptPart);
         }
     }
@@ -263,20 +327,71 @@ public class RealtimeAPIWrapper : MonoBehaviour
     /// </summary>
     private void HandleResponseDone(JObject eventMessage)
     {
-        if (!audioPlayer.IsAudioPlaying())
-        {
-            isResponseInProgress = false;
-        }
-        OnResponseDone?.Invoke();
+        LogResponseData(eventMessage);
+
+        // Continue your normal handling
+        StartCoroutine(WaitForAudioFinish());
     }
+
+    private void LogResponseData(JObject eventMessage)
+    {
+        // Extract and log token usage from the event
+        try
+        {
+            var usage = eventMessage["response"]?["usage"];
+            if (usage != null)
+            {
+                int inputTokens = usage.Value<int?>("input_tokens") ?? 0;
+                int outputTokens = usage.Value<int?>("output_tokens") ?? 0;
+                int totalTokens = usage.Value<int?>("total_tokens") ?? (inputTokens + outputTokens);
+
+                Debug.Log($"### Token usage: input={inputTokens}, output={outputTokens}, total={totalTokens}");
+
+                // Optional: if you want to see if it accumulates
+                if (inputTokens > 1000)
+                    Debug.LogWarning("⚠️ Context growing large — consider ResetConversation soon.");
+            }
+            else
+            {
+                Debug.Log("### No token usage info found in response.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error parsing token usage: " + ex.Message);
+        }
+    }
+
+    private IEnumerator WaitForAudioFinish()
+    {
+        // Wait until audioPlayer queue is empty
+        while (audioPlayer.IsAudioPlaying())
+            yield return null;
+
+        _isResponseInProgress = false;
+        OnResponseDone?.Invoke();
+        
+        _conversationTurnCount++;
+        Debug.Log($"### Turn {_conversationTurnCount} completed.");
+
+        if (_conversationTurnCount >= maxTurnsBeforeReset)
+        {
+            ResetConversation();
+            _conversationTurnCount = 0;
+            Debug.Log("### Conversation auto-reset after max turns reached.");
+        }
+
+        Debug.Log("### Audio fully finished.");
+    }
+
 
     /// <summary>
     /// handles response.created message - resets transcript buffer
     /// </summary>
     private void HandleResponseCreated(JObject eventMessage)
     {
-        transcriptBuffer.Clear();
-        isResponseInProgress = true;
+        _transcriptBuffer.Clear();
+        _isResponseInProgress = true;
         OnResponseCreated?.Invoke();
     }
 
@@ -292,6 +407,31 @@ public class RealtimeAPIWrapper : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Helper to send JSON
+    /// </summary>
+    /// <param name="message"></param>
+    private async Task SendJson(object message)
+    {
+        string jsonString = JsonConvert.SerializeObject(message);
+        byte[] messageBytes = Encoding.UTF8.GetBytes(jsonString);
+        await ws.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+    }
+
+    public void ResetConversation(string newVoice = null)
+    {
+        _currentConversationId = null;
+
+        if (!string.IsNullOrEmpty(newVoice))
+        {
+            _currentVoice = newVoice;
+            Debug.Log("### Switched voice to: " + newVoice);
+        }
+
+        Debug.Log("### Conversation reset.");
+    }
+
+    
     /// <summary>
     /// disposes the websocket connection
     /// </summary>

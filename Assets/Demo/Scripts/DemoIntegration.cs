@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -38,6 +39,12 @@ public class DemoIntegration : MonoBehaviour
     float[] aiBarAmplitudes;
     float barSmoothingSpeed = 5f;
 
+    public void ClearTextboxes()
+    {
+        conversationText.text = string.Empty;
+        eventsText.text = String.Empty;
+    }
+    
     private void Start()
     {
         pushToTalkButton.onClick.AddListener(OnRecordButtonPressed);
@@ -183,7 +190,11 @@ public class DemoIntegration : MonoBehaviour
         if (audioRecorder.listeningMode == ListeningMode.PushToTalk)
         {
             if (isRecording) StopRecording();
-            else StartRecording();
+            else
+            {
+                ClearTextboxes();
+                StartRecording();
+            }
         }
     }
 

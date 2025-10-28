@@ -788,6 +788,11 @@ PrefabInstance:
       propertyPath: audioPlayer
       value: 
       objectReference: {fileID: 1101493450}
+    - target: {fileID: 9186162126272398602, guid: 61d2351f5339c4a4bbe638876e1b5149, type: 3}
+      propertyPath: promptInstruction
+      value: Speak a brief, engaging response as if guiding someone through a place.
+        Include a transcript
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1049,7 +1054,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1809908902719563693, guid: 10e80b27875c2445f86b93f03f6f24ca, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4541538120706314309, guid: 10e80b27875c2445f86b93f03f6f24ca, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1120,6 +1125,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1313061123547425143, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1313061123547425143, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1313061123547425143, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -80
+      objectReference: {fileID: 0}
     - target: {fileID: 1532402257996066136, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1151,6 +1168,18 @@ PrefabInstance:
     - target: {fileID: 1710206016733480592, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178975479906841517, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178975479906841517, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0.8431373
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178975479906841517, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2280149581913286804, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1501,6 +1530,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8428551282407799376, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428551282407799376, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0.3921569
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428551282407799376, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428551282407799376, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1101493456}
@@ -1523,6 +1564,22 @@ PrefabInstance:
     - target: {fileID: 8621603656619835539, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8987016609929392044, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8987016609929392044, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8987016609929392044, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 8987016609929392044, guid: fc531736d51444c8280c8d93c32c7c33, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 96
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
